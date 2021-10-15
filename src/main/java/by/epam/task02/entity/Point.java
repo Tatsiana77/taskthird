@@ -70,11 +70,11 @@ public class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return Double.compare(point.getX(), getX()) == 0 &&
-                Double.compare(point.getY(), getY()) == 0 &&
-                Double.compare(point.getZ(), getZ()) == 0 &&
-                Double.compare(point.getK(), getK()) == 0 &&
-                Double.compare(point.getA(), getA()) == 0;
+        return Double.compare(point.x, x) == 0 &&
+                Double.compare(point.y, y) == 0 &&
+                Double.compare(point.z, z) == 0 &&
+                Double.compare(point.k, k) == 0 &&
+                Double.compare(point.a, a) == 0;
     }
 
     @Override
