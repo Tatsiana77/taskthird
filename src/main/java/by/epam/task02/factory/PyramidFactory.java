@@ -3,31 +3,34 @@ package by.epam.task02.factory;
 import by.epam.task02.entity.Point;
 import by.epam.task02.entity.Pyramid;
 import by.epam.task02.exception.PyramidException;
+import by.epam.task02.validator.PyramidLineValidator;
+import by.epam.task02.validator.PyramidParameterValidator;
+import by.epam.task02.validator.PyramidValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PyramidFactory {
-    private static final Logger logger = LogManager.getLogger();
-    private static final int VALUE_COUNT = 10;
 
-    public PyramidFactory() {
+    public static Pyramid createPyramid(Point vertex, double height, double sideLength) {
+        return new Pyramid(vertex, height, sideLength);
     }
 
-    public static Pyramid createPyramid(List<Double> coordinates) throws PyramidException {
-        if (coordinates.size() != VALUE_COUNT) {
-            logger.log(Level.ERROR, "Invalid argument  count :  {} ", coordinates);
-            throw new PyramidException("Invalid argument count :  " + coordinates);
-        }
-        Point vertex = new Point(coordinates.get(0), coordinates.get(1));
-        Point base1 = new Point(coordinates.get(2), coordinates.get(3));
-        Point base2 = new Point(coordinates.get(4), coordinates.get(5));
-        Point base3 = new Point(coordinates.get(6), coordinates.get(7));
-        Point base4 = new Point(coordinates.get(8), coordinates.get(9));
-        var pyramid = new Pyramid(vertex, base1, base2, base3, base4);
-        return pyramid;
+    public static Pyramid createPyramid(double x, double y, double z, double sideLength, double height) {
+        return createPyramid(new Point(x, y, z), sideLength, height);
     }
+
+    public static Pyramid createPyramid(double[] parameters) {
+        Point points = new Point(parameters[0], parameters[1], parameters[2]);
+        double sideLength = parameters[3];
+        double height = parameters[4];
+        return createPyramid(points, sideLength, height);
+    }
+
 }
+
 

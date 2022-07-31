@@ -4,8 +4,7 @@ import by.epam.task02.entity.Pyramid;
 import by.epam.task02.repository.PyramidSpecification;
 
 public class PyramidIdSpecification implements PyramidSpecification {
-
-    private  final long id;
+    private long id;
 
     public PyramidIdSpecification(long id) {
         this.id = id;
@@ -13,6 +12,7 @@ public class PyramidIdSpecification implements PyramidSpecification {
 
     @Override
     public boolean specify(Pyramid pyramid) {
-        return  pyramid.getPyramidId()==id;
+        boolean isSpecified = pyramid.getPyramidId() == id;
+        return isSpecified;
     }
 }

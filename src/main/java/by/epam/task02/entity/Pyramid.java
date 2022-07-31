@@ -6,24 +6,29 @@ import by.epam.task02.observer.PyramidObserver;
 import by.epam.task02.util.ShapeIdGenerator;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 public class Pyramid implements PyramidObservable {
-    private final long pyramidId;
+    private long pyramidId;
     private Point vertex;
-    private Point base1;
-    private Point base2;
-    private Point base3;
-    private Point base4;
-    private final ArrayList<PyramidObserver> observers = new ArrayList<>();
+    private double height;
+    private double sideLength;
+    private final List<PyramidObserver> observers = new ArrayList<>();
 
     public Pyramid() {
-        this.vertex = new Point();
-        this.base1 = new Point();
-        this.base2 = new Point();
-        this.base3 = new Point();
-        this.base4 = new Point();
-        this.pyramidId = ShapeIdGenerator.generateId();
+        pyramidId = ShapeIdGenerator.generateId();
+    }
+
+    public Pyramid(Point vertex, double height, double sideLength) {
+        this.vertex = vertex;
+        this.height = height;
+        this.sideLength = sideLength;
+    }
+
+    public long getPyramidId() {
+        return pyramidId;
     }
 
     public Point getVertex() {
@@ -34,58 +39,35 @@ public class Pyramid implements PyramidObservable {
         this.vertex = vertex;
     }
 
-    public Point getBase1() {
-        return base1;
+    public double getHeight() {
+        return height;
     }
 
-    public void setBase1(Point base1) {
-        this.base1 = base1;
+    public void setHeight(double height) {
+        this.height = height;
     }
 
-    public Point getBase2() {
-        return base2;
+    public double getSideLength() {
+        return sideLength;
     }
 
-    public void setBase2(Point base2) {
-        this.base2 = base2;
+    public void setSideLength(double sideLength) {
+        this.sideLength = sideLength;
     }
 
-    public Point getBase3() {
-        return base3;
+    public List<PyramidObserver> getObservers() {
+        return observers;
     }
 
-    public void setBase3(Point base3) {
-        this.base3 = base3;
+    public void setPyramidId(long pyramidId) {
+        this.pyramidId = pyramidId;
     }
-
-    public Point getBase4() {
-        return base4;
-    }
-
-    public void setBase4(Point base4) {
-        this.base4 = base4;
-    }
-
-    public long getPyramidId() {
-        return pyramidId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pyramid pyramid = (Pyramid) o;
-        return pyramid.vertex.equals(vertex) &&
-                pyramid.base1.equals(base1) &&
-                pyramid.base2.equals(base2) &&
-                pyramid.base3.equals(base3) &&
-                pyramid.base4.equals(base4);
-    }
-
 
     @Override
     public void attach(PyramidObserver observer) {
-        observers.add(observer);
+        if (observer != null) {
+            observers.add(observer);
+        }
     }
 
     @Override
@@ -95,37 +77,46 @@ public class Pyramid implements PyramidObservable {
 
     @Override
     public void notifyObservers() {
-        for (PyramidObserver observer : observers) {
-            if (observer == null) {
-                continue;
+        PyramidEvent event = new PyramidEvent(this);
+        if (!observers.isEmpty()) {
+            for (PyramidObserver observer : observers) {
+                observer.updateArea(event);
+                observer.updatePyramidVolume(event);
             }
-            PyramidEvent event = new PyramidEvent(this);
-            observer.parameterChanged(event);
         }
     }
 
     @Override
-    public int hashCode() {
-        int result = 1;
-        result += result * 31 + base1.hashCode();
-        result += result * 31 + base2.hashCode();
-        result += result * 31 + base3.hashCode();
-        result += result * 31 + base4.hashCode();
-        result += result * 31 + vertex.hashCode();
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pyramid)) return false;
+        Pyramid pyramid = (Pyramid) o;
+        return getPyramidId() == pyramid.getPyramidId() &&
+                Double.compare(pyramid.getSideLength(), getSideLength()) == 0 &&
+                Objects.equals(getVertex(), pyramid.getVertex()) &&
+                Objects.equals(getHeight(), pyramid.getHeight()) &&
+                Objects.equals(getObservers(), pyramid.getObservers());
+    }
 
+    @Override
+    public int hashCode() {
+        int result = this.vertex.hashCode();
+        long longBits = Double.doubleToLongBits(this.sideLength);
+        result = 31 * result + (int) (longBits - (longBits >>> 32));
+        longBits = Double.doubleToLongBits(this.height);
+        result = 31 * result + (int) (longBits - (longBits >>> 32));
+        return result;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Ellipse{");
+        final StringBuilder sb = new StringBuilder("Pyramid {");
         sb.append("pyramidId=").append(pyramidId);
-        sb.append(", vertex=").append(vertex);
-        sb.append(", base1=").append(base1);
-        sb.append(", base2=").append(base2);
-        sb.append(", base3=").append(base3);
-        sb.append(", base4=").append(base4);
+        sb.append(", vertex =").append(vertex);
+        sb.append(", sideLength =").append(sideLength);
+        sb.append(", height =").append(height);
         sb.append('}');
         return sb.toString();
     }
+
 }
